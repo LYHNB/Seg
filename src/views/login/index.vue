@@ -56,7 +56,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 #poster {
     background-position: center;
     height: 100%;

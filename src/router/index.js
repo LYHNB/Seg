@@ -3,17 +3,14 @@ import VueRouter from 'vue-router'
 import Home from '../views/HomeView.vue'
 import Login from '../views/login/index.vue'
 import Framework from '@/views/Framework.vue'
+import NotFound from '@/views/404.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path:'/',
-    redirect: '/login'
-  },
-  {
     //登录页
-    path: '/login',
+    path: '/',
     name: 'Login',
     component: Login
   },
@@ -29,6 +26,11 @@ const routes = [
         component:Home
       }
     ]
+  },
+  {
+    path:'*',
+    component:NotFound,
+    hidden:true
   }
 ]
 
