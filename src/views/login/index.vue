@@ -2,10 +2,15 @@
 
     <body id="poster">
         <el-form class="login-container" label-position="left" label-width="0px">
-            <h3 class="login_title">
-                系统登陆
-            </h3>
+            <div>
+                <h3 class="login_title">
+                    系统登陆
+                </h3>
+            </div>
             <el-form-item label="">
+                <span class="svg-container">
+                    <svg-icon icon-class="user" />
+                </span>
                 <el-input type="text" v-model="loginForm.username" autocomplete="off" placeholder="账号"></el-input>
             </el-form-item>
             <el-form-item label="">
@@ -85,6 +90,13 @@ body {
     background: #fff;
     border: 1px solid #eaeaea;
     box-shadow: 0 0 25px #cac6c6;
+
+    .svg-container {
+        padding: 6px 5px 6px 15px;
+        vertical-align: middle;
+        width: 30px;
+        display: inline-block;
+    }
 }
 
 .login_title {
