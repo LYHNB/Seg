@@ -26,7 +26,7 @@
                 </span>
             </el-form-item>
             <el-form-item style="width: 100%;">
-                <el-button type="primary" style="width: 100%;background: #505458;border: none;"
+                <el-button :loading="loading" type="primary" style="width: 100%;background: #505458;border: none;"
                     v-on:click="Login()">登录</el-button>
             </el-form-item>
         </el-form>
@@ -63,40 +63,57 @@ export default {
                 username: [{ required: true, trigger: 'blur', validator: validateUsername }],
                 password: [{ required: true, trigger: 'blur', validator: validatePassword }]
             },
-            passwordType: 'password'
+            passwordType: 'password',
+            loading: false
         }
     },
     methods: {
         showPwd() {
             if (this.passwordType === 'password') {
-                this.passwordType = ''
+                this.passwordType = '';
             } else {
-                this.passwordType = 'password'
+                this.passwordType = 'password';
             }
             this.$nextTick(() => {
-                this.$refs.password.focus()
+                this.$refs.password.focus();
             })
         },
         Login() {
-            //console.log('submit!', this.loginForm);
-
-            this.axios.post('http://localhost:8080/login', this.loginForm).then((resp) => {
-                let data = resp.data;
-                if (data.code) {
-                    this.loginForm = {};
-                    this.$message({
-                        message: '登陆成功！',
-                        type: 'success'
+            //验证表单中的账号密码是否有效,因为required:true
+            this.$refs.loginForm.validate((valid) => {
+                //点击登录后，展示加载画面
+                this.loading = true;
+                //如果经过校验，账号密码都不为空，则发送请求到后端登录接口
+                if (valid) {
+                    this.axios.post('http://localhost:8080/login', this.loginForm).then((resp) => {
+                        let data = resp.data;
+                        if (data.code) {
+                            this.loginForm = {};
+                            this.$router.push({ path: '/Home' });
+                            this.$message({
+                                message: '登陆成功！',
+                                type: 'success'
+                            });
+                        }
+                        else {
+                            this.$message({
+                                message: data.msg,
+                                type: 'error'
+                            });
+                        }
+                        this.loading = false;
                     });
-                    this.$router.push({ path: '/Home' })
                 }
+                //如果账号或密码有一个没填，就直接提示必填，不向后端请求
                 else {
-                    this.$message({
-                        message: data.msg,
-                        type: 'error'
-                    });
+                    console.log("error submit!!");
+                    this.loading = false;
+                    return false;
                 }
+
             })
+
+
 
             /* this.$message({
                 message: '登陆成功！',

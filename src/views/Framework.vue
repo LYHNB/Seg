@@ -14,7 +14,7 @@
                         </el-menu-item-group>
                     </el-submenu>
                     <el-submenu index="2">
-                        <template slot="title"><i class="el-icon-menu"></i>导航二</template>
+                        <template slot="title"><i class="el-icon-menu"></i>已上传文件</template>
                         <el-menu-item-group>
                             <template slot="title">分组一</template>
                             <el-menu-item index="2-1">选项1</el-menu-item>
@@ -28,6 +28,9 @@
                             <el-menu-item index="2-4-1">选项4-1</el-menu-item>
                         </el-submenu>
                     </el-submenu>
+                    <el-menu-item>
+                        <template slot="title"><i class="el-icon-menu"></i>已上传文件</template>
+                    </el-menu-item>
 
                 </el-menu>
             </el-aside>
@@ -42,7 +45,8 @@
                             <el-dropdown-item>删除</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <span>{{this.$route.params.name}}</span>
+                    <span>{{ this.$route.params.name }}</span>
+
                 </el-header>
 
                 <el-main>
@@ -55,7 +59,19 @@
 
 <script>
 export default {
-
+    data() {
+        return {
+            routeParamsName: ''
+        };
+    },
+    watch: {
+        '$route'() {
+            this.routeParamsName = this.$route.params.name;
+        }
+    },
+    created() {
+        this.routeParamsName = this.$route.params.name;
+    }
 }
 </script>
 
@@ -70,12 +86,12 @@ export default {
     color: #333;
 }
 
-a{
-  text-decoration: none;
-  color: #333;
+a {
+    text-decoration: none;
+    color: #333;
 }
 
 .router-link-active {
-  text-decoration: none;
+    text-decoration: none;
 }
 </style>

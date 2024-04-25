@@ -4,11 +4,11 @@ import Home from '../views/HomeView.vue'
 import Login from '../views/login/index.vue'
 import Framework from '@/views/Framework.vue'
 import NotFound from '@/views/404.vue'
+import Employee from '@/views/employee/index.vue'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
+const routes = [{
     //登录页
     path: '/',
     name: 'Login',
@@ -19,23 +19,27 @@ const routes = [
     path: '/home',
     name: 'home',
     component: Framework,
-    children:[
+    children: [{
+        path: '/test',
+        name: 'test',
+        component: Home
+      },
       {
-        path:'/test',
-        name:'test',
-        component:Home
+        path: '/employeeList',
+        name: 'employeeList',
+        component: Employee
       }
     ]
   },
   {
-    path:'*',
-    component:NotFound,
-    hidden:true
+    path: '*',
+    component: NotFound,
+    hidden: true
   }
 ]
 
 const router = new VueRouter({
-  mode:'history',
+  mode: 'history',
   routes
 })
 
