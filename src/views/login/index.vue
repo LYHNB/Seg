@@ -85,41 +85,33 @@ export default {
                 this.loading = true;
                 //如果经过校验，账号密码都不为空，则发送请求到后端登录接口
                 if (valid) {
-                    this.axios.post('http://localhost:8080/login', this.loginForm).then((resp) => {
+                    this.$api.employee.login(this.loginForm).then((resp) => {
+                        console.dir(resp);
                         let data = resp.data;
                         if (data.code) {
+                            localStorage.setItem('token', data.data.token);
+                            localStorage.setItem('name', data.data.name);
                             this.loginForm = {};
-                            this.$router.push({ path: '/Home' });
+                            //跳转后不可返回
+                            //this.$router.replace('/home');
+                            this.$router.push({ path: '/home' });
                             this.$message({
                                 message: '登陆成功！',
                                 type: 'success'
                             });
                         }
-                        else {
-                            this.$message({
-                                message: data.msg,
-                                type: 'error'
-                            });
-                        }
                         this.loading = false;
+                    }).catch(error => {
+                        this.loading = false;
+                        console.error('Caught an error:', error.message); //捕捉response拦截器返回的错误
                     });
                 }
                 //如果账号或密码有一个没填，就直接提示必填，不向后端请求
                 else {
-                    console.log("error submit!!");
                     this.loading = false;
                     return false;
                 }
-
             })
-
-
-
-            /* this.$message({
-                message: '登陆成功！',
-                type: 'success'
-            });
-            this.$router.push({ name: 'home', params: { name: this.loginForm.loginName } }); */
         }
     }
 }

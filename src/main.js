@@ -3,13 +3,16 @@ import App from './App.vue'
 import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
 import '@/icons' // icon
+import api from './api'
+
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
-Vue.use(VueAxios, axios)
+
+Vue.prototype.$api = api; // 将api挂载到vue的原型上
+
+console.log(process.env);
 
 new Vue({
   router,

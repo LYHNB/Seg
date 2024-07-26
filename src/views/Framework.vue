@@ -1,55 +1,50 @@
 <template>
     <div>
         <el-container>
-            <el-aside width="200px">
-                <el-menu :default-openeds="['1', '3']">
-                    <el-submenu index="1">
-                        <template slot="title"><i class="el-icon-message"></i>用户管理</template>
-                        <el-menu-item-group>
-                            <el-menu-item index="1-1">
-                                <router-link to="/test">测试</router-link>
-                            </el-menu-item>
-                            <el-menu-item index="1-2">选项2</el-menu-item>
-                            <el-menu-item index="1-3">选项3</el-menu-item>
-                        </el-menu-item-group>
-                    </el-submenu>
-                    <el-submenu index="2">
-                        <template slot="title"><i class="el-icon-menu"></i>已上传文件</template>
-                        <el-menu-item-group>
-                            <template slot="title">分组一</template>
-                            <el-menu-item index="2-1">选项1</el-menu-item>
-                            <el-menu-item index="2-2">选项2</el-menu-item>
-                        </el-menu-item-group>
-                        <el-menu-item-group title="分组2">
-                            <el-menu-item index="2-3">选项3</el-menu-item>
-                        </el-menu-item-group>
-                        <el-submenu index="2-4">
-                            <template slot="title">选项4</template>
-                            <el-menu-item index="2-4-1">选项4-1</el-menu-item>
-                        </el-submenu>
-                    </el-submenu>
-                    <el-menu-item>
-                        <template slot="title"><i class="el-icon-menu"></i>已上传文件</template>
-                    </el-menu-item>
-
-                </el-menu>
-            </el-aside>
-
-            <el-container>
-                <el-header style="text-align: right; font-size: 12px">
-                    <el-dropdown>
-                        <i class="el-icon-setting" style="margin-right: 15px"></i>
+            <el-header>
+                <div style="position: absolute; right: 10px; display: flex; align-items: center;">
+                    <span style="font-size: 15px;">{{ name }}</span>
+                    <el-dropdown style="margin: 10px;" @command="commandHandler">
+                        <i class="el-icon-setting"></i>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>查看</el-dropdown-item>
                             <el-dropdown-item>新增</el-dropdown-item>
-                            <el-dropdown-item>删除</el-dropdown-item>
+                            <el-dropdown-item command="logout">注销登录</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <span>{{ this.$route.params.name }}</span>
+                </div>
+                <div style="flex-grow: 1; text-align: center;font-family: 华文楷体; font-size: 30px;">
+                    文档分割
+                </div>
+            </el-header>
 
-                </el-header>
+            <el-container style="height: 100%;">
+                <el-aside width="200px">
+                    <el-menu>
+                        <el-menu-item index="1">
+                            <router-link to="/test" class="r-l">
+                                <i class="el-icon-menu" style="margin-right: 8px;"></i>
+                                测试
+                            </router-link>
+                        </el-menu-item>
+                        <el-menu-item index="2">
+                            <router-link to="/employeeList" class="r-l">
+                                <i class="el-icon-menu" style="margin-right: 8px;"></i>
+                                用户管理
+                            </router-link>
+                        </el-menu-item>
+                    </el-menu>
+                </el-aside>
 
                 <el-main>
+                    <el-breadcrumb separator-class="el-icon-arrow-right"
+                        v-if="this.$router.currentRoute.path != '/home'">
+                        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+                        <el-breadcrumb-item>{{ this.$router.currentRoute.name }}</el-breadcrumb-item>
+                    </el-breadcrumb>
+                    <div class="homeWelcome" v-if="this.$router.currentRoute.path == '/home'">
+                        欢迎使用文档分割
+                    </div>
                     <router-view />
                 </el-main>
             </el-container>
@@ -58,19 +53,27 @@
 </template>
 
 <script>
+import { Message } from 'element-ui';
+
 export default {
-    data() {
-        return {
-            routeParamsName: ''
-        };
-    },
-    watch: {
-        '$route'() {
-            this.routeParamsName = this.$route.params.name;
+    computed: {
+        name() {
+            return localStorage.getItem('name');
         }
     },
-    created() {
-        this.routeParamsName = this.$route.params.name;
+    methods: {
+        commandHandler(command) {
+            if (command == 'logout') {
+                this.$message({
+                    message: '退出成功',
+                    type: 'success'
+                })
+                localStorage.clear();
+                setTimeout(() => {
+                    this.$router.push('/login');
+                }, 2000)
+            }
+        }
     }
 }
 </script>
@@ -80,10 +83,15 @@ export default {
     background-color: #B3C0D1;
     color: #333;
     line-height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
 .el-aside {
     color: #333;
+    overflow-x: hidden;
 }
 
 a {
@@ -94,4 +102,145 @@ a {
 .router-link-active {
     text-decoration: none;
 }
+
+.r-l {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.homeWelcome {
+    text-align: center;
+    font-size: 30px;
+    font-family: 华文楷体;
+    color: #409eff;
+    padding-top: 50px;
+}
 </style>
+<!-- <template>
+    <div>
+        <el-container>
+            <el-header>
+                <div style="position: absolute; right: 10px; display: flex; align-items: center;">
+                    <span style="font-size: 15px;">{{ name }}</span>
+                    <el-dropdown style="margin: 10px;" @command="commandHandler">
+                        <i class="el-icon-setting"></i>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>查看</el-dropdown-item>
+                            <el-dropdown-item>新增</el-dropdown-item>
+                            <el-dropdown-item command="logout">注销登录</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </div>
+                <div style="flex-grow: 1; text-align: center; font-family: 华文楷体; font-size: 30px;">
+                    文档分割
+                </div>
+            </el-header>
+
+            <el-container style="height: 100%;">
+                <el-aside width="200px">
+                    <el-menu>
+                        <el-menu-item index="1" @click="handleMenuClick('/test')">
+                            <router-link to="/test" class="r-l">
+                                <i class="el-icon-menu" style="margin-right: 8px;"></i>
+                                测试
+                            </router-link>
+                        </el-menu-item>
+                        <el-menu-item index="2" @click="handleMenuClick('/employeeList')">
+                            <router-link to="/employeeList" class="r-l">
+                                <i class="el-icon-menu" style="margin-right: 8px;"></i>
+                                用户管理
+                            </router-link>
+                        </el-menu-item>
+                    </el-menu>
+                </el-aside>
+
+                <el-main>
+                    <el-breadcrumb separator-class="el-icon-arrow-right"
+                        v-if="this.$router.currentRoute.path != '/home'">
+                        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+                        <el-breadcrumb-item>{{ this.$router.currentRoute.name }}</el-breadcrumb-item>
+                    </el-breadcrumb>
+                    <div class="homeWelcome" v-if="this.$router.currentRoute.path == '/home'">
+                        欢迎使用文档分割
+                    </div>
+                    <router-view />
+                </el-main>
+            </el-container>
+        </el-container>
+    </div>
+</template>
+
+<script>
+import { Message } from 'element-ui';
+
+export default {
+    computed: {
+        name() {
+            return localStorage.getItem('name');
+        }
+    },
+    methods: {
+        commandHandler(command) {
+            if (command == 'logout') {
+                this.$message({
+                    message: '退出成功',
+                    type: 'success'
+                });
+                localStorage.clear();
+                setTimeout(() => {
+                    this.$router.push('/login');
+                }, 2000);
+            }
+        },
+        handleMenuClick(path) {
+            if (this.$route.path === path) {
+                this.$router.go(0);
+            }
+        }
+    }
+};
+</script>
+
+<style>
+.el-header {
+    background-color: #B3C0D1;
+    color: #333;
+    line-height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.el-aside {
+    color: #333;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: #333;
+}
+
+.router-link-active {
+    text-decoration: none;
+}
+
+.r-l {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.homeWelcome {
+    text-align: center;
+    font-size: 30px;
+    font-family: 华文楷体;
+    color: #409eff;
+    padding-top: 50px;
+}
+</style>
+ -->

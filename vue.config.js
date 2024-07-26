@@ -1,18 +1,21 @@
 const path = require('path')
-function resolve (dir) {
+
+function resolve(dir) {
   return path.join(__dirname, dir)
 }
-const { defineConfig } = require('@vue/cli-service')
+const {
+  defineConfig
+} = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
-  devServer:{
-    port:9000,
+  devServer: {
+    port: 9000,
     client: {
       overlay: false
     }
   },
-  lintOnSave:false,
-  chainWebpack (config) {
+  lintOnSave: false,
+  chainWebpack(config) {
 
     // set svg-sprite-loader
     config.module
