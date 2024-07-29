@@ -1,45 +1,55 @@
 <template>
-    <el-dialog title="新增员工" :visible.sync="visible" width="500px" style="padding-bottom: 0;" center @close="handleClose"
+    <el-dialog title="编辑员工" :visible.sync="visible" width="500px" style="padding-bottom: 0;" center @close="handleClose"
         :close-on-click-modal="false" :show-close="false">
-        <el-form :model="formAddEmp" ref="formAddEmp" :rules="addRules" label-width="100px">
+        <el-form :model="formUpdateEmp" ref="formUpdateEmp" :rules="addRules" label-width="100px">
             <el-form-item label="姓名" prop="name">
-                <el-input v-model="formAddEmp.name" ref="name" autocomplete="off" style="width: 280px;"
+                <el-input v-model="formUpdateEmp.name" ref="name" autocomplete="off" style="width: 280px;"
                     placeholder="请输入姓名"></el-input>
             </el-form-item>
             <el-form-item label="用户名" prop="username">
-                <el-input v-model="formAddEmp.username" ref="username" autocomplete="off" style="width: 280px;"
+                <el-input v-model="formUpdateEmp.username" ref="username" autocomplete="off" style="width: 280px;"
                     placeholder="请输入用户名"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password">
-                <el-input v-model="formAddEmp.password" ref="password" autocomplete="off" style="width: 280px;"
+                <el-input v-model="formUpdateEmp.password" ref="password" autocomplete="off" style="width: 280px;"
                     show-password placeholder="请输入密码"></el-input>
             </el-form-item>
         </el-form>
 
         <div slot="footer" class="dialog-footer">
             <el-button @click="handleCancel">取 消</el-button>
-            <el-button type="primary" @click="addEmp">确 定</el-button>
+            <el-button type="primary" @click="updateEmp">确 定</el-button>
         </div>
     </el-dialog>
 </template>
 
 <script>
-import { Message } from 'element-ui';
-
 export default {
-    name: 'AddEmp',
+    name: 'UpdateEmp',
     props: {
         visible: {
             type: Boolean,
             default: false
+        },
+        formData: {
+            type: Object,
+            default: () => ({})
         }
     },
     watch: {
-        visible(newVal) {
-            if (newVal) {
-                this.resetForm();
-            }
-        }
+        formData: {
+            immediate: true,
+            handler(newValue) {
+                if (newValue) {
+                    this.formUpdateEmp = {
+                        id: newValue.id || '',
+                        name: newValue.name || '',
+                        username: newValue.username || '',
+                        password: newValue.password || '',
+                    };
+                }
+            },
+        },
     },
     data() {
         //对姓名进行校验
@@ -83,7 +93,8 @@ export default {
         }
         return {
             //新增员工表单
-            formAddEmp: {
+            formUpdateEmp: {
+                id: '',
                 name: '',
                 username: '',
                 password: ''
@@ -101,30 +112,28 @@ export default {
     methods: {
         handleCancel() {
             this.$emit('update:visible', false);
+            this.$emit('close');
         },
-        addEmp() {
-            this.$refs.formAddEmp.validate((valid) => {
+        updateEmp() {
+            this.$refs.formUpdateEmp.validate((valid) => {
                 //校验通过，发送请求
                 if (valid) {
-                    this.$api.admin.addEmp(this.formAddEmp).then(resp => {
+                    this.$api.admin.updateEmp(this.formUpdateEmp).then(resp => {
                         let data = resp.data;
                         if (data.code) {
-                            Message.success('新增员工成功');
+                            Message.success('编辑员工成功');
                             this.$emit('update:visible', false);
                             this.$emit('submit')
                         }
                     })
                 }
             })
-
+            this.$emit('submit');
+            this.$emit('update:visible', false);
         },
         handleClose() {
             this.$emit('update:visible', false);
-        },
-        resetForm() {
-            this.$nextTick(() => {
-                this.$refs.formAddEmp.resetFields();
-            })
+            this.$emit('close');
         }
     }
 }

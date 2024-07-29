@@ -34,10 +34,23 @@ const admin = {
             }
         })
     },
+    /**
+     * 新增员工
+     * @param {*} data 
+     * @returns 
+     */
     addEmp: (data) => {
         return request({
             url: '/employee/add',
             method: 'post',
+            data
+        })
+    },
+
+    updateEmp: (data) => {
+        return request({
+            url: '/employee/update',
+            method: 'put',
             data
         })
     }

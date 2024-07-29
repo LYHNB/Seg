@@ -8,7 +8,7 @@
             </div>
             <div>
                 <el-button type="primary" icon="el-icon-plus" @click="dialogAddEmp = true">添加</el-button>
-                <add-emp :visible.sync="dialogAddEmp"></add-emp>
+                <add-emp :visible.sync="dialogAddEmp" @submit="getEmployeeList"></add-emp>
             </div>
         </div>
 
@@ -17,8 +17,6 @@
             <el-table :data="employeeList" :row-class-name="tableRowClassName" style="width: 100%;height: auto;">
                 <el-table-column prop="username" label="用户名" align="center">
                 </el-table-column>
-                <!-- <el-table-column prop="phoneNumber" label="手机号" align="center">
-            </el-table-column> -->
                 <el-table-column prop="password" label="密码" align="center">
                 </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center" sortable>
@@ -30,7 +28,7 @@
                         <el-button size="mini" @click="statusHandle(scope.row)" v-if="scope.row.username !== 'admin'">
                             {{ scope.row.status === 1 ? '禁用' : '启用' }}
                         </el-button>
-                        <el-button size="mini" type="primary" @click="handleEdit()">
+                        <el-button size="mini" type="primary" @click="openDialogUpdate(scope.row)">
                             编辑
                         </el-button>
                         <el-button size="mini" type="danger" @click="deleteEmp(scope.row)"
@@ -40,6 +38,8 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <update-emp :visible.sync="dialogUpdateEmp" :formData="selectedRow" @submit="getEmployeeList"
+                @close="handleDialogCloseUpdate"></update-emp>
             <el-pagination background layout="total,sizes, prev, pager, next, jumper"
                 :page-size.sync="pageParam.pageSize" :page-sizes="pageSizes" :current-page.sync="pageParam.page"
                 :total="total" :hide-on-single-page="false" @size-change="getEmployeeList"
@@ -50,11 +50,13 @@
 
 <script>
 import AddEmp from '@/views/employee/AddEmp.vue'
+import UpdateEmp from '@/views/employee/UpdateEmp.vue'
 
 export default {
     name: 'employeeList',
     components: {
-        AddEmp
+        AddEmp,
+        UpdateEmp
     },
     data() {
         return {
@@ -71,13 +73,17 @@ export default {
 
             //新增员工对话框是否可见
             dialogAddEmp: false,
+            //编辑员对话框是否可见
+            dialogUpdateEmp: false,
+            //编辑员工中被选中行的数据
+            selectedRow: null
         }
     },
     methods: {
         /**
          * 获取员工列表
          */
-        getEmployeeList() {
+        async getEmployeeList() {
             this.$api.employee.getEmployeeList(this.pageParam).then((resp) => {
                 let data = resp.data;
                 if (data.code) {
@@ -142,6 +148,15 @@ export default {
                     message: '已取消修改'
                 })
             })
+        },
+
+        openDialogUpdate(rowData) {
+            this.selectedRow = rowData;
+            this.dialogUpdateEmp = true;
+        },
+        handleDialogCloseUpdate() {
+            this.dialogUpdateEmp = false;
+            this.selectedRow = null;
         }
     },
     created() {
