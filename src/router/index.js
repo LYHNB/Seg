@@ -3,13 +3,13 @@ import VueRouter from 'vue-router'
 import nProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
-import Home from '../views/HomeView.vue'
 import Login from '../views/login/index.vue'
-import Framework from '@/views/Framework.vue'
+import Framework from '@/views/layout/Framework.vue'
 import NotFound from '@/views/404.vue'
 import Employee from '@/views/employee/index.vue'
+import Log from '@/views/log/index.vue'
+import Uploads from '@/views/upload/index.vue'
 import nprogress from 'nprogress'
-import HomeView from '@/views/HomeView.vue'
 import {
   Message
 } from 'element-ui'
@@ -36,14 +36,19 @@ const routes = [{
       authRequired: true
     },
     children: [{
-        path: '/test',
-        name: '测试',
-        component: Home
+        path: '/log',
+        name: '日志',
+        component: Log
       },
       {
         path: '/employeeList',
         name: '用户管理',
         component: Employee
+      },
+      {
+        path: '/uploads',
+        name: "文档上传",
+        component: Uploads
       }
     ]
   },

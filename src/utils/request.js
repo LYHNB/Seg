@@ -96,25 +96,8 @@ service.interceptors.response.use(response => {
 }, error => {
   nProgress.done();
   errorHandle(error);
-  console.dir(error);
-  return Promise.reject(error.response);
+  //console.dir(error);
+  return Promise.reject(error);
 })
 
-
-/* export const post = (url, data) => {
-  return axios({
-    method: 'post',
-    url: `${url}`,
-    data: data
-  })
-}
-
-export const get = (url, params) => {
-  return axios({
-    method: 'get',
-    url: `${url}`,
-    data: params
-  })
-}
- */
 export default service;

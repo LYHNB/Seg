@@ -12,7 +12,7 @@
             </el-form-item>
             <el-form-item label="密码" prop="password">
                 <el-input v-model="formUpdateEmp.password" ref="password" autocomplete="off" style="width: 280px;"
-                    show-password placeholder="请输入密码"></el-input>
+                    :show-password="showPassword" placeholder="请输入密码"></el-input>
             </el-form-item>
         </el-form>
 
@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import { Message } from 'element-ui';
+
 export default {
     name: 'UpdateEmp',
     props: {
@@ -82,7 +84,7 @@ export default {
         const validatePassword = (rule, value, callback) => {
             if (value === '') {
                 return callback(new Error(('请输入密码')))
-            } else if (value.length < 3) {
+            } else if (value.length < 4) {
                 callback(new Error('密码不能少于 4 个字符'));
             } else if (value.length > 10) {
                 callback(new Error('密码不能多于 20 个字符'));
@@ -92,6 +94,7 @@ export default {
             }
         }
         return {
+            showPassword: true,
             //新增员工表单
             formUpdateEmp: {
                 id: '',
@@ -120,6 +123,7 @@ export default {
                 if (valid) {
                     this.$api.admin.updateEmp(this.formUpdateEmp).then(resp => {
                         let data = resp.data;
+                        console.log(data.code);
                         if (data.code) {
                             Message.success('编辑员工成功');
                             this.$emit('update:visible', false);
@@ -128,12 +132,12 @@ export default {
                     })
                 }
             })
-            this.$emit('submit');
-            this.$emit('update:visible', false);
         },
         handleClose() {
+            this.$refs.formUpdateEmp.clearValidate();
             this.$emit('update:visible', false);
             this.$emit('close');
+
         }
     }
 }
